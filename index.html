@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lawfy | AI automation for law firms</title>
+<meta name="description" content="Lawfy builds custom AI automations that take repetitive admin off your legal team: client intake, court filings, document handling and billing follow-ups.">
+<meta property="og:title" content="Lawfy | AI automation for law firms">
+<meta property="og:description" content="Before you hire another intake coordinator: custom AI automations for law firms, scoped in a free 20-minute audit.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#201f1d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 26'%3E%3Cpath d='M0 0h22v16H10v10H0z' fill='%23201f1d'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #201f1d;
+    --char: #33322f;
+    --paper: #f3f2f2;
+    --stone: #dfe0e2;
+    --card: #eae9e9;
+    --line: #d4d3d1;
+    --muted: #5d5b57;
+    --accent-200: #ece0bd;
+    --accent-300: #dcc68e;
+    --accent-700: #8a6a24;
+    --accent-800: #5e4a1d;
+    --accent-900: #3b2f14;
+    --pad-x: clamp(16px, 4vw, 56px);
+    --pad-y: clamp(56px, 7vw, 104px);
+    --sans: 'Libre Franklin', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img, svg { max-width: 100%; }
+  h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+  p { margin: 0; text-wrap: pretty; }
+
+  /* type helpers */
+  .label { font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+  .eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .eyebrow .rule { width: 26px; height: 1px; background: currentColor; opacity: .5; }
+  .eyebrow .arrow { letter-spacing: 0; }
+  .h2 { font-size: clamp(32px, 4.2vw, 60px); line-height: 1; letter-spacing: -0.035em; max-width: 18ch; }
+  .lede { font-size: clamp(16.5px, 1.2vw, 19px); line-height: 1.6; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--mono); font-size: 12.5px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 18px 28px; transition: background .15s, color .15s; text-align: center; }
+  .btn-accent { background: var(--accent-300); color: var(--ink); }
+  .btn-accent:hover { background: var(--accent-200); }
+  .btn-dark { background: var(--ink); color: var(--paper); padding: 13px 20px; font-size: 11.5px; }
+  .btn-dark:hover { background: var(--accent-700); }
+  .btn:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent-700); outline-offset: 3px; }
+
+  .mark { width: 22px; height: 26px; background: currentColor; clip-path: polygon(0 0, 100% 0, 100% 62%, 46% 62%, 46% 100%, 0 100%); flex: none; }
+
+  /* header */
+  header { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px var(--pad-x); background: color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 12px; font-size: 21px; font-weight: 600; letter-spacing: -0.04em; }
+  nav { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 34px); }
+  nav .navlink { color: var(--muted); }
+  nav .navlink:hover { color: var(--ink); }
+
+  /* hero */
+  .hero { background: var(--char); color: var(--paper); padding: clamp(44px, 6vw, 88px) var(--pad-x) 0; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(36px, 5vw, 80px); align-items: center; padding-bottom: clamp(44px, 6vw, 80px); }
+  .hero .crumb { color: color-mix(in srgb, var(--paper) 62%, transparent); margin-bottom: clamp(24px, 3.5vw, 44px); display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero .crumb .arrow { color: var(--accent-300); }
+  .hero h1 { font-size: clamp(42px, 5.6vw, 88px); line-height: .98; letter-spacing: -0.04em; max-width: 15ch; margin-bottom: clamp(22px, 3vw, 34px); }
+  .hero h1 em { font-style: normal; color: var(--accent-300); }
+  .hero .lede { color: color-mix(in srgb, var(--paper) 80%, transparent); max-width: 52ch; margin-bottom: clamp(28px, 3.6vw, 40px); }
+  .cta-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .hero .note { color: color-mix(in srgb, var(--paper) 58%, transparent); }
+
+  /* intake flow visual */
+  .flow { background: #2a2927; border: 1px solid color-mix(in srgb, var(--paper) 14%, transparent); padding: clamp(18px, 2.2vw, 28px); font-family: var(--mono); }
+  .flow-head { display: flex; justify-content: space-between; gap: 12px; color: color-mix(in srgb, var(--paper) 55%, transparent); padding-bottom: 14px; border-bottom: 1px solid color-mix(in srgb, var(--paper) 12%, transparent); margin-bottom: 16px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  .flow ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .flow li { display: grid; grid-template-columns: 54px 1fr; gap: 14px; align-items: start; }
+  .flow time { font-size: 12px; color: var(--accent-300); padding-top: 13px; }
+  .flow .step { background: color-mix(in srgb, var(--paper) 6%, transparent); border-left: 2px solid var(--accent-300); padding: 11px 14px; }
+  .flow .step b { display: block; font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--paper); margin-bottom: 4px; letter-spacing: -0.01em; }
+  .flow .step span { font-size: 12px; line-height: 1.55; color: color-mix(in srgb, var(--paper) 66%, transparent); }
+  .flow .fields { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .flow .fields i { font-style: normal; font-size: 10.5px; letter-spacing: .06em; padding: 3px 7px; background: color-mix(in srgb, var(--accent-300) 18%, transparent); color: var(--accent-200); }
+  .flow .step.human { border-left-color: var(--paper); }
+  .flow-foot { margin-top: 14px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 45%, transparent); }
+
+  .tools { border-top: 1px solid color-mix(in srgb, var(--paper) 16%, transparent); display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 64px); align-items: center; padding: 24px 0 28px; }
+  .tools .label { color: color-mix(in srgb, var(--paper) 55%, transparent); }
+  .tools ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px clamp(20px, 3.4vw, 48px); color: color-mix(in srgb, var(--paper) 74%, transparent); }
+
+  /* sections */
+  section { padding: var(--pad-y) var(--pad-x); position: relative; }
+  .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+
+  .friction { background: var(--accent-300); overflow: hidden; }
+  .friction .eyebrow { color: var(--accent-800); }
+  .friction .lede { color: var(--accent-900); margin-bottom: clamp(28px, 4vw, 40px); max-width: 52ch; }
+  .signs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: color-mix(in srgb, var(--ink) 22%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); }
+  .signs div { background: var(--accent-300); padding: 20px 18px; }
+  .signs b { display: block; font-size: 17px; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .signs span { font-size: 14px; line-height: 1.5; color: var(--accent-900); }
+  .corner { position: absolute; right: 0; bottom: 0; width: clamp(110px, 14vw, 230px); height: 44%; background: color-mix(in srgb, var(--paper) 30%, transparent); clip-path: polygon(40% 0, 100% 0, 100% 100%, 72% 100%, 72% 52%, 40% 52%); pointer-events: none; }
+
+  .sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: end; padding-bottom: clamp(32px, 4vw, 52px); border-bottom: 1px solid var(--line); }
+  .sec-head .eyebrow { color: var(--muted); }
+  .sec-head .eyebrow .arrow { color: var(--accent-700); }
+  .sec-head .lede { color: #3d3b38; max-width: 46ch; }
+
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(32px, 4vw, 52px); }
+  .card { background: var(--card); padding: clamp(24px, 2.6vw, 36px); display: flex; flex-direction: column; gap: 14px; clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%, 22% 94%, 0 94%); transition: background .2s; padding-bottom: clamp(40px, 3.6vw, 52px); }
+  .card:hover { background: var(--accent-200); }
+  .card-top { display: flex; align-items: center; justify-content: space-between; color: var(--muted); }
+  .card-top .mark { width: 15px; height: 18px; color: var(--ink); }
+  .card h3 { font-size: clamp(22px, 1.9vw, 27px); line-height: 1.1; letter-spacing: -0.03em; }
+  .card p { font-size: 15.5px; line-height: 1.6; color: #3d3b38; }
+  .card .for { margin-top: auto; padding-top: 6px; color: var(--accent-800); }
+
+  /* example */
+  .example { background: var(--char); color: var(--paper); }
+  .example .eyebrow { color: color-mix(in srgb, var(--paper) 62%, transparent); }
+  .example .eyebrow .arrow { color: var(--accent-300); }
+  .example .lede { color: color-mix(in srgb, var(--paper) 78%, transparent); margin-top: 24px; max-width: 50ch; }
+  .tag { display: inline-block; margin-top: 26px; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--accent-300) 60%, transparent); color: var(--accent-300); }
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 20px 0; border-bottom: 1px solid color-mix(in srgb, var(--paper) 14%, transparent); }
+  .steps li:first-child { padding-top: 0; }
+  .steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--accent-300); padding-top: 4px; }
+  .steps b { display: block; font-size: 18px; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .steps span { font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--paper) 72%, transparent); }
+
+  /* security */
+  .security { background: var(--stone); }
+  .sec-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(28px, 4vw, 64px); margin-top: clamp(28px, 3.6vw, 44px); }
+  .sec-list div { padding: 22px 0; border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+  .sec-list b { display: block; font-size: 18px; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .sec-list p { font-size: 15px; line-height: 1.6; color: #3d3b38; }
+
+  /* process */
+  .process-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: clamp(32px, 4vw, 52px); }
+  .process-grid div { background: var(--paper); padding: clamp(22px, 2.4vw, 32px); }
+  .process-grid .label { color: var(--accent-700); display: block; margin-bottom: 14px; }
+  .process-grid b { display: block; font-size: 21px; letter-spacing: -0.025em; margin-bottom: 10px; }
+  .process-grid p { font-size: 15px; line-height: 1.6; color: #3d3b38; }
+
+  .founder { margin-top: clamp(40px, 5vw, 64px); display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: start; max-width: 760px; }
+  .founder .avatar { width: 56px; height: 56px; background: var(--ink); color: var(--accent-300); display: grid; place-items: center; font-weight: 600; font-size: 20px; }
+  .founder p { font-size: 17px; line-height: 1.6; color: #3d3b38; }
+  .founder p b { color: var(--ink); }
+
+  /* faq */
+  .faq { background: var(--paper); padding-top: 0; }
+  .faq-list { border-top: 1px solid var(--line); max-width: 900px; }
+  details { border-bottom: 1px solid var(--line); }
+  summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 20px; padding: 22px 0; font-size: clamp(17px, 1.4vw, 20px); font-weight: 600; letter-spacing: -0.02em; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-family: var(--mono); font-weight: 400; color: var(--accent-700); font-size: 20px; line-height: 1; }
+  details[open] summary::after { content: '−'; }
+  details p { padding: 0 0 22px; font-size: 15.5px; line-height: 1.65; color: #3d3b38; max-width: 70ch; }
+
+  /* close */
+  .close { background: var(--ink); color: var(--paper); overflow: hidden; }
+  .close .eyebrow { color: color-mix(in srgb, var(--paper) 55%, transparent); }
+  .close .eyebrow .arrow { color: var(--accent-300); }
+  .close-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) auto; gap: clamp(32px, 5vw, 72px); align-items: end; padding-right: clamp(0px, 6vw, 120px); }
+  .close h2 { font-size: clamp(34px, 4.4vw, 64px); line-height: .98; letter-spacing: -0.04em; max-width: 20ch; }
+  .close .side { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .close .side .label { color: color-mix(in srgb, var(--paper) 55%, transparent); line-height: 1.6; font-weight: 400; }
+  .close .corner { background: color-mix(in srgb, var(--accent-300) 14%, transparent); height: 58%; width: clamp(80px, 11vw, 170px); }
+
+  footer { background: var(--ink); color: color-mix(in srgb, var(--paper) 55%, transparent); padding: 24px var(--pad-x) 34px; border-top: 1px solid color-mix(in srgb, var(--paper) 16%, transparent); display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; flex-wrap: wrap; font-size: 12.5px; }
+  footer .brand { color: var(--paper); font-size: 16px; gap: 10px; }
+  footer .brand .mark { width: 13px; height: 16px; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1000px) {
+    .hero-grid, .two-col, .sec-head, .close-grid { grid-template-columns: 1fr; }
+    .hero-grid { align-items: start; }
+    .hero h1 { max-width: 16ch; }
+    .close-grid { padding-right: 0; }
+    .process-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    nav .navlink { display: none; }
+    header { padding-top: 12px; padding-bottom: 12px; }
+    .brand { font-size: 19px; }
+    .btn-dark { padding: 11px 14px; font-size: 10.5px; letter-spacing: .1em; }
+    .cards, .sec-list { grid-template-columns: 1fr; }
+    .signs { grid-template-columns: 1fr; }
+    .tools { grid-template-columns: 1fr; gap: 14px; }
+    .cta-row .btn { width: 100%; }
+    .close .side { align-items: stretch; width: 100%; }
+    .corner { display: none; }
+    .flow li { grid-template-columns: 44px 1fr; gap: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#top" aria-label="Lawfy home"><span class="mark" aria-hidden="true"></span>Lawfy</a>
+  <nav aria-label="Main">
+    <a class="label navlink" href="#problem">Problem</a>
+    <a class="label navlink" href="#build">What we build</a>
+    <a class="label navlink" href="#security">Confidentiality</a>
+    <a class="label navlink" href="#process">Process</a>
+    <a class="btn btn-dark js-book" href="#book">Book an audit</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="crumb label"><span>Lawfy</span><span class="arrow">&rarr;</span><span>AI automation for law firms</span></div>
+        <h1>Before you hire another <em>intake coordinator.</em></h1>
+        <p class="lede">Lawfy builds custom AI automations that take repetitive admin off your team: client intake, court filings, document handling and billing follow-ups. The system does the typing. Your people make the decisions.</p>
+        <div class="cta-row">
+          <a class="btn btn-accent js-book" href="#book">Book a free 20-minute audit</a>
+          <span class="label note">Fixed-scope builds from $10,000</span>
+        </div>
+      </div>
+
+      <figure class="flow" aria-label="Example: an after-hours intake call handled automatically" style="margin:0">
+        <div class="flow-head"><span>Example · after-hours intake</span><span>Tue</span></div>
+        <ol>
+          <li><time>9:42p</time><div class="step"><b>New caller, after hours</b><span>Call is answered, recorded and transcribed. Nobody has to stay late.</span></div></li>
+          <li><time>9:49p</time><div class="step"><b>Intake record drafted</b><span>Key facts pulled from the conversation into your case system.</span>
+            <div class="fields"><i>Incident date</i><i>Injuries</i><i>Insurance</i><i>County</i><i>SOL flag</i></div></div></li>
+          <li><time>9:50p</time><div class="step"><b>Urgent case flagged</b><span>Close to the statute of limitations, so it goes to the top of the list.</span></div></li>
+          <li><time>7:00a</time><div class="step human"><b>Attorney reviews the summary</b><span>One ranked digest at the start of the day. A person confirms before anything goes out.</span></div></li>
+        </ol>
+        <figcaption class="flow-foot">Illustrative workflow · scoped to your firm</figcaption>
+      </figure>
+    </div>
+
+    <div class="tools">
+      <span class="label">Works with your existing tools</span>
+      <ul class="label">
+        <li>Clio</li><li>MyCase</li><li>Filevine</li><li>Litify</li><li>NetDocuments</li><li>iManage</li><li>Microsoft 365</li><li>RingCentral</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 01 PROBLEM -->
+  <section id="problem" class="friction">
+    <div class="corner" aria-hidden="true"></div>
+    <div class="two-col" style="position:relative">
+      <div>
+        <div class="eyebrow label"><span>01</span><span class="rule"></span><span class="arrow">&rarr;</span><span>The problem</span></div>
+        <h2 class="h2">Growth is turning into admin.</h2>
+      </div>
+      <div>
+        <p class="lede">More cases means more calls, more documents, more invoices. Most firms answer that by hiring another assistant to re-type the same facts into the same systems. It's slow, it's expensive, and the work still piles up after 5pm.</p>
+        <div class="signs">
+          <div><b>You're hiring for intake or data entry</b><span>The work is repetitive enough to describe in a job post.</span></div>
+          <div><b>Calls go unanswered after hours</b><span>New clients call the next firm on the list.</span></div>
+          <div><b>The same facts get typed three times</b><span>Phone notes, case system, billing. Every copy is a chance for errors.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 WHAT WE BUILD -->
+  <section id="build">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow label"><span>02</span><span class="rule"></span><span class="arrow">&rarr;</span><span>What we build</span></div>
+        <h2 class="h2">Automations built around how your firm already works.</h2>
+      </div>
+      <p class="lede">No new platform to learn, no software subscription to justify. We connect to the systems you already use and remove the manual steps between them.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="card-top label"><span>01</span><span class="mark" aria-hidden="true"></span></div>
+        <h3>Client intake</h3>
+        <p>Calls and web forms become structured intake records in your case system, with missing details flagged and urgent matters surfaced for an attorney.</p>
+        <span class="for label">For PI, workers' comp, family and mass-tort firms</span>
+      </article>
+      <article class="card">
+        <div class="card-top label"><span>02</span><span class="mark" aria-hidden="true"></span></div>
+        <h3>Court filings &amp; documents</h3>
+        <p>E-filing notices and stamped copies are named, filed to the right matter, and turned into draft deadline entries for someone to approve.</p>
+        <span class="for label">For litigation teams</span>
+      </article>
+      <article class="card">
+        <div class="card-top label"><span>03</span><span class="mark" aria-hidden="true"></span></div>
+        <h3>Billing &amp; collections</h3>
+        <p>Invoices, payment reminders and aging reports run on schedule, with exceptions routed to your billing lead instead of chased by hand.</p>
+        <span class="for label">For firms with hourly or flat-fee billing</span>
+      </article>
+      <article class="card">
+        <div class="card-top label"><span>04</span><span class="mark" aria-hidden="true"></span></div>
+        <h3>Settlements &amp; referral fees</h3>
+        <p>Settlement figures, costs and referral terms are pulled together into draft distribution statements, ready for review and sign-off.</p>
+        <span class="for label">For contingency-fee practices</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- 03 EXAMPLE -->
+  <section class="example">
+    <div class="two-col">
+      <div>
+        <div class="eyebrow label"><span>03</span><span class="rule"></span><span class="arrow">&rarr;</span><span>An example build</span></div>
+        <h2 class="h2">After-hours intake for a personal injury firm.</h2>
+        <p class="lede">A typical first project: one workflow, one team, measurable from week one. This is how a build like it is put together.</p>
+        <span class="tag label">Illustrative example · every build is scoped to your firm</span>
+      </div>
+      <ol class="steps">
+        <li><div><b>Map the current workflow</b><span>Which calls come in when, what intake staff capture, where it's typed, and where cases get lost.</span></div></li>
+        <li><div><b>Capture and transcribe</b><span>Calls through your existing phone system are transcribed securely. Nothing changes for the caller.</span></div></li>
+        <li><div><b>Draft the intake record</b><span>The facts your screening attorneys need are extracted into a draft record in your case system, with gaps flagged.</span></div></li>
+        <li><div><b>Human approval</b><span>Your team reviews and confirms each record. The system never signs a client or sends advice.</span></div></li>
+        <li><div><b>Measure and hand over</b><span>Track response times and hours saved, document everything, and train your team to run it.</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 04 SECURITY -->
+  <section id="security" class="security">
+    <div class="sec-head" style="border-bottom:0;padding-bottom:0">
+      <div>
+        <div class="eyebrow label"><span>04</span><span class="rule"></span><span class="arrow">&rarr;</span><span>Confidentiality</span></div>
+        <h2 class="h2">Built for privileged information.</h2>
+      </div>
+      <p class="lede">Your clients trust you with sensitive facts. Every Lawfy build is designed around that, starting with the scoping call.</p>
+    </div>
+    <div class="sec-list">
+      <div><b>Your data stays in your systems</b><p>Automations run in accounts your firm owns and controls. You keep the keys, and you can switch it off at any time.</p></div>
+      <div><b>A person approves every action</b><p>Nothing is filed, sent or signed without someone on your team confirming it. Every step is logged.</p></div>
+      <div><b>Least-access by design</b><p>Each automation can only reach the specific folders, matters and fields it needs, nothing more.</p></div>
+      <div><b>No training on your data</b><p>We use AI providers on business terms where your firm's data is not used to train their models.</p></div>
+    </div>
+  </section>
+
+  <!-- 05 PROCESS -->
+  <section id="process">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow label"><span>05</span><span class="rule"></span><span class="arrow">&rarr;</span><span>How it works</span></div>
+        <h2 class="h2">Start with one workflow.</h2>
+      </div>
+      <p class="lede">No long discovery phase, no open-ended retainer. You see the scope and the price before anything is built.</p>
+    </div>
+    <div class="process-grid">
+      <div><span class="label">Step 1 · Free</span><b>20-minute audit</b><p>We walk through one workflow together and estimate the hours it could save. You keep the notes either way.</p></div>
+      <div><span class="label">Step 2 · Fixed price</span><b>Scoped proposal</b><p>A written plan with what gets built, what it connects to, the timeline and a fixed price. Builds start from $10,000.</p></div>
+      <div><span class="label">Step 3 · Build</span><b>Build, test, hand over</b><p>Built alongside your team, tested on real cases with human review, then documented and handed over. Ongoing support is optional.</p></div>
+    </div>
+    <div class="founder">
+      <div class="avatar" aria-hidden="true">J</div>
+      <p><b>You work directly with the person who builds it.</b> I'm Josh. I design and build every Lawfy automation myself, so the person scoping your workflow is the same person writing the system. No account managers, no hand-offs.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="eyebrow label" style="color:var(--muted)"><span>06</span><span class="rule"></span><span class="arrow" style="color:var(--accent-700)">&rarr;</span><span id="faq-title">Questions</span></div>
+    <div class="faq-list">
+      <details><summary>Do we need to replace our case management software?</summary><p>No. Lawfy builds connect to the tools you already use, such as Clio, MyCase, Filevine, Microsoft 365 and your phone system. If a tool has no way to connect, we'll tell you in the audit.</p></details>
+      <details><summary>What happens if the AI gets something wrong?</summary><p>Every build includes human review at the points that matter. The system drafts and flags; your team confirms. Records and actions are logged, so you can see exactly what happened and correct it.</p></details>
+      <details><summary>What does it cost?</summary><p>The audit is free. Builds are fixed-price and start from $10,000, depending on how many systems are involved and how complex the workflow is. You'll have the exact price in writing before any work starts.</p></details>
+      <details><summary>Will this replace our staff?</summary><p>It takes repetitive typing and filing off their plate, so assistants and paralegals spend their time on work that needs judgement. Most firms use it to handle growth without adding headcount.</p></details>
+      <details><summary>How long does a build take?</summary><p>It depends on scope. A single workflow is usually measured in weeks, not months, and you'll get a timeline in the proposal.</p></details>
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section id="book" class="close">
+    <div class="corner" aria-hidden="true"></div>
+    <div class="eyebrow label" style="position:relative"><span>07</span><span class="rule"></span><span class="arrow">&rarr;</span><span>Next step</span></div>
+    <div class="close-grid">
+      <h2>Bring us one workflow. We'll scope it end to end.</h2>
+      <div class="side">
+        <a class="btn btn-accent js-book" id="book-btn" href="#book">Book a free 20-minute audit</a>
+        <a class="label js-email" href="#book" style="color:var(--accent-300);font-weight:400"></a>
+        <span class="label">20 minutes, with the person who builds it</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="brand"><span class="mark" aria-hidden="true"></span>Lawfy</span>
+  <span class="label" style="font-weight:400">AI automation for law firms</span>
+  <span>&copy; <span id="year">2026</span> Lawfy</span>
+</footer>
+
+<script>
+  // ---- Edit these two lines ----
+  const BOOKING_URL = "";   // e.g. "https://cal.com/lawfy/audit"
+  const CONTACT_EMAIL = ""; // e.g. "josh@lawfy.co"
+  // -------------------------------
+
+  if (BOOKING_URL) {
+    document.querySelectorAll(".js-book").forEach(a => {
+      a.href = BOOKING_URL; a.target = "_blank"; a.rel = "noopener";
+    });
+  }
+  const email = document.querySelector(".js-email");
+  if (CONTACT_EMAIL) { email.textContent = CONTACT_EMAIL; email.href = "mailto:" + CONTACT_EMAIL; }
+  else email.remove();
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
